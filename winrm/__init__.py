@@ -59,33 +59,37 @@ class Session(object):
         """
         # TODO prepare unit test, beautify code
         # if the msg does not start with this, return it as is
-        if msg.startswith("#< CLIXML\r\n"):
-            # for proper xml, we need to remove the CLIXML part
-            # (the first line)
-            msg_xml = msg[11:]
-            try:
-                # remove the namespaces from the xml for easier processing
-                msg_xml = self._strip_namespace(msg_xml)
-                root = ET.fromstring(msg_xml)
-                # the S node is the error message, find all S nodes
-                nodes = root.findall("./S")
-                new_msg = ""
-                for s in nodes:
-                    # append error msg string to result, also
-                    # the hex chars represent CRLF so we replace with newline
-                    new_msg += s.text.replace("_x000D__x000A_", "\n")
-            except Exception as e:
-                # if any of the above fails, the msg was not true xml
-                # print a warning and return the orignal string
-                # TODO do not print, raise user defined error instead
-                print("Warning: there was a problem converting the Powershell"
-                      " error message: %s" % (e))
-            else:
-                # if new_msg was populated, that's our error message
-                # otherwise the original error message will be used
-                if len(new_msg):
-                    # remove leading and trailing whitespace while we are here
-                    msg = new_msg.strip()
+        cli_xml = b"#< CLIXML\r\n"
+        if not msg.startswith(cli_xml):
+            return msg
+
+        # for proper xml, we need to remove the CLIXML part
+        # (the first line)
+        msg_xml = msg[len(cli_xml):]
+        try:
+            # remove the namespaces from the xml for easier processing
+            msg_xml = self._strip_namespace(msg_xml)
+            root = ET.fromstring(msg_xml)
+            # the S node is the error message, find all S nodes
+            nodes = root.findall("./S")
+            new_msg = (
+                ''
+                .join([s.text for s in nodes])
+                # the hex chars represent CRLF so we replace with newline
+                .replace("_x000D__x000A_", "\n")
+            )
+        except Exception as e:
+            # if any of the above fails, the msg was not true xml
+            # print a warning and return the orignal string
+            # TODO do not print, raise user defined error instead
+            print("Warning: there was a problem converting the Powershell"
+                  " error message: %s" % (e))
+        else:
+            # if new_msg was populated, that's our error message
+            # otherwise the original error message will be used
+            if new_msg:
+                # remove leading and trailing whitespace while we are here
+                return new_msg.strip().encode('utf8')
         return msg
 
     def _strip_namespace(self, xml):
