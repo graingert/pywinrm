@@ -7,16 +7,11 @@ before_install:
       export HOMEBREW_FORCE_VENDOR_RUBY=1
       eval $(~/.linuxbrew/bin/brew shellenv)
     fi
-  - |
-    if [[ -n "${INSTALL_OPENSSL}" ]]; then
-      brew install openssl@1.1
-      ssldir=$(brew --prefix openssl@1.1 2>/dev/null || true)
-      export PKG_CONFIG_PATH="${ssldir}/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}"
-      export LDFLAGS="-L${ssldir}/lib"
-      export LD_LIBRARY_PATH="${ssldir}/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
-      export CFLAGS="-I${ssldir}/include"
-      export CPPFLAGS="-I${ssldir}/include"
-    fi
+  - "if [[ -n \"${INSTALL_OPENSSL}\" ]]; then\n  brew install openssl@1.1\n  ssldir=$(brew\
+    \ --prefix openssl@1.1 2>/dev/null || true)\n  export PKG_CONFIG_PATH=\"${ssldir}/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}\"\
+    \n  export LDFLAGS=\"-L${ssldir}/lib\"\n  export LD_LIBRARY_PATH=\"${ssldir}/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}\"\
+    \n  export CFLAGS=\"-I${ssldir}/include\"\n  export CPPFLAGS=\"-I${ssldir}/include\"\
+    \nfi\n"
   - |
     if [[ -n "${PYENV_VERSION}" ]]; then
       export PYENV_ROOT="${HOME}/.travis-pyenv"
@@ -159,33 +154,5 @@ matrix:
     - language: generic
       os: osx
       osx_image: xcode9.4
-      env: 'PYENV_VERSION=pypy3.5-6.0.0 INSTALL_OPENSSL=True'
-    - language: generic
-      os: osx
-      osx_image: xcode8.3
-      env: PYENV_VERSION=2.7.15
-    - language: generic
-      os: osx
-      osx_image: xcode8.3
-      env: PYENV_VERSION=3.4.9
-    - language: generic
-      os: osx
-      osx_image: xcode8.3
-      env: PYENV_VERSION=3.5.6
-    - language: generic
-      os: osx
-      osx_image: xcode8.3
-      env: PYENV_VERSION=3.6.8
-    - language: generic
-      os: osx
-      osx_image: xcode8.3
-      env: PYENV_VERSION=3.7.2
-    - language: generic
-      os: osx
-      osx_image: xcode8.3
-      env: 'PYENV_VERSION=pypy2.7-6.0.0 INSTALL_OPENSSL=True'
-    - language: generic
-      os: osx
-      osx_image: xcode8.3
       env: 'PYENV_VERSION=pypy3.5-6.0.0 INSTALL_OPENSSL=True'
 script: 'py.test -v --pep8 --cov=winrm --cov-report=term-missing winrm/tests/'

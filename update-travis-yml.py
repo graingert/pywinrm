@@ -38,7 +38,7 @@ class MacOS(OS):
 languages = ['generic']
 dists = [
     *[Linux(d) for d in ['xenial', 'trusty']],
-    *[MacOS(i) for i in ['xcode10.1', 'xcode9.4', 'xcode8.3']],
+    *[MacOS(i) for i in ['xcode10.1', 'xcode9.4']],
 ]
 pythons = [
     '2.7.15',
