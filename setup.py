@@ -1,24 +1,26 @@
+from os import path
+
 from setuptools import setup
 
 __version__ = '0.3.1.dev0'
 project_name = 'pywinrm'
 
-# PyPi supports only reStructuredText, so pandoc should be installed
-# before uploading package
-try:
-    import pypandoc
-    long_description = pypandoc.convert('README.md', 'rst')
-except ImportError:
-    long_description = ''
+this_directory = path.abspath(path.dirname(__file__))
+with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
+    long_description = f.read()
+
 
 setup(
     name=project_name,
     version=__version__,
     description='Python library for Windows Remote Management',
     long_description=long_description,
+    long_description_content_type='text/markdown',
     keywords='winrm ws-man devops ws-management'.split(' '),
     author='Alexey Diyan',
     author_email='alexey.diyan@gmail.com',
+    maintainer='Thomas Grainger',
+    maintainer_email='pywinrm@graingert.co.uk',
     url='http://github.com/diyan/pywinrm/',
     license='MIT license',
     packages=('winrm', 'winrm.tests'),
