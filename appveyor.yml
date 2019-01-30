@@ -13,6 +13,10 @@ environment:
     - PYTHON: Python34-x64
     - PYTHON: Python35
     - PYTHON: Python35-x64
+    - PYTHON: Python36
+    - PYTHON: Python36-x64
+    - PYTHON: Python37
+    - PYTHON: Python37-x64
 init:
   - ps: |
       $ErrorActionPreference = "Stop"
