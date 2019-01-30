@@ -18,7 +18,6 @@ environment:
 
 init:
   - ps: |
-      $ErrorActionPreference = "Stop"
       # Override default Python version/architecture
       $env:Path="C:\$env:PYTHON;C:\$env:PYTHON\Scripts;$env:PATH"
       # disable "Python 2.7 is going away soon" warnings
